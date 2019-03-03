@@ -7,7 +7,89 @@ import (
 )
 
 func main() {
-	lesson17()
+	lesson20()
+}
+
+// 20190303 clojure
+func lesson20(){
+	counter := incrementGenerator()
+	fmt.Println(counter())
+	fmt.Println(counter())
+	fmt.Println(counter())
+	fmt.Println(counter())
+	
+	counter2 := incrementGenerator()
+	fmt.Println(counter2())
+	
+	c1 := circleArea(3.14)
+	fmt.Println(c1(5))
+
+	c2 := circleArea(3)
+	fmt.Println(c2(5))
+}
+
+
+func circleArea(pi float64) func(radius float64) float64{
+	return func(radius float64) float64{
+		return pi * radius * radius
+	}
+}
+
+
+func incrementGenerator() (func() int){
+	x := 0
+	return func() int {
+		x++
+		return x
+	}
+}
+
+
+// 20190303 function
+func lesson19(){
+	r := add(10, 20)
+	fmt.Println(r)
+	
+	r1, r2 := calc1(10, 20)
+	fmt.Println(r1, " / ", r2)
+	
+	r3 := calc2(10, 20)
+	fmt.Println(r3)
+	
+	f := func(x int){
+		fmt.Println("inner func", x)
+	}
+	f(1)
+	
+	func(x int){
+		fmt.Println("inner func", x)
+	}(2)
+}
+
+func add(x int, y int) int{
+// funt add(x, y int) int{  //x,yが両方intの場合はこのように書ける！
+	return x + y
+}
+
+// 返り値が複数あるパターン！
+func calc1(x, y int) (int, int){
+	return x + y, x - y
+}
+
+func calc2(price, item int)(result int){
+	result = price * item //すでに定義済みなので初期化する必要がない！
+	return // naked return 
+}
+
+// 20190303 bytetype
+func lesson18(){
+	b := []byte{72, 73}
+	fmt.Println(b) //72, 73と表示される
+	fmt.Println(string(b)) // HIと表示
+	
+	c := []byte("HI")
+	fmt.Println(c) //72, 73と表示される∂
+	fmt.Println(string(c)) //HIと表示される
 }
 
 // Map

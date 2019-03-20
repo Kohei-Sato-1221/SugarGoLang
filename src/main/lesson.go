@@ -4,11 +4,108 @@ import (
 	"fmt"
 	"strings"
 	"strconv"
+	"time"
+	"os"
+	"log"
+	"io"
 )
 
 func main() {
-	lesson20()
+	lesson29()
 }
+
+// 20190320 log
+func lesson29() {
+	// golangではJavaみたくinfo, errorとかがない　→　使う場合は独自実装のやつを！
+	LoggingSettings("test.log")
+	_, err := os.Open("hogehogehoge")
+	if err != nil{
+		log.Fatalln("Error!", err)
+	}
+	
+	
+	log.Println("loggoin!")
+	log.Printf("%T %v", "test", "test")
+	
+	log.Fatalln("error!") // これ以降はプログラムがexitしてしまう
+	log.Println("ああああ")
+}
+
+func LoggingSettings(logFile string){
+	logfile, _ := os.OpenFile(logFile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+	multiLogFile := io.MultiWriter(os.Stdout, logfile)
+	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
+	log.SetOutput(multiLogFile)
+}
+
+
+// 20190320 defer 遅延実行
+func lesson28() {
+	zoo()
+	
+	defer fmt.Println("world")
+	fmt.Println("hello")
+	
+	//使い所はファイルのクローズ処理等！
+	file, _ := os.Open("/Users/kohei.sato/eclipse-workspace/SugarGo/src/main/lesson.go")
+	defer file.Close()
+	data := make([]byte, 100)
+	file.Read(data)
+	fmt.Println(string(data))
+}
+
+func zoo() {
+	defer fmt.Println("world foo")	
+	fmt.Println("hello foo")
+}
+
+// 20180320 switch
+func lesson27() {
+	switch os := getOsName(); os{ //switch文だけで利用する場合
+		case "mac":
+			fmt.Println("Mac!", os)
+		case "windows":
+			fmt.Println("Mac!")
+		default:
+			fmt.Println("default")	
+	}
+	
+	t := time.Now()
+	fmt.Println(t.Hour())
+	switch { // switch文の最初に条件を書かないパターン
+			case t.Hour() < 12 :
+				fmt.Println("Goog Morning!")
+			case t.Hour() < 17 :
+				fmt.Println("Afternoon")
+	}
+}
+
+func getOsName() string{
+	return "mac"
+}
+
+// 20190320 range
+func lesson26() {
+	l := []string{"python", "go", "java"}
+	
+	for i := 0; i < len(l); i++{
+		fmt.Println(i, l[i])
+	}
+	
+	for i, v := range l{
+		fmt.Println(i, v)
+	}
+	
+	for _, v := range l{
+		fmt.Println(i, v)
+	}
+	
+	m := map[string] int{"apple" : 100, "banana" : 200}
+	for k, v := range m{
+		fmt.Println(k,v)
+	}
+}
+
 
 // 20190303 clojure
 func lesson20(){

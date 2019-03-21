@@ -11,10 +11,54 @@ import (
 )
 
 func main() {
-	lesson29()
+	lesson31()
 }
 
+// 20190321 panic 例外的なやつ
+// panicはあまりGo的には推奨されていない　→　l30のようにerrを拾うべき
+func lesson31(){
+	saveDB()
+	fmt.Println("OK")
+}
+
+func saveDB(){
+	defer func(){ // saveDBが終わった時点で実行される
+		s := recover() //panic起こしたものをここで拾っている → recoverすると強制終了から回避
+		fmt.Println(s)
+	}()
+	connectToDatabase()
+}
+
+func connectToDatabase(){
+	panic("Unable to connect DB")
+}
+
+
+
+// 20190321 error handling
+// → javaでいうtry-catchの代わりに errを返却値にしてifで分岐する
+func lesson30() {
+	file, err := os.Open("test.log")
+	if err != nil {
+		log.Fatalln("Error!")
+	}
+	defer file.Close()
+	data := make([]byte, 100)
+	count, err := file.Read(data) // この場合, countはイニシャライズしているが、errは上書き
+	if err != nil {
+		log.Fatalln("Error!")
+	}
+	fmt.Println(count, string(data), "!!")
+	
+	if err = os.Chdir("test"); err != nil {
+//	if err != nil {
+		log.Fatalln("Error!")
+	}
+}
+
+
 // 20190320 log
+/*
 func lesson29() {
 	// golangではJavaみたくinfo, errorとかがない　→　使う場合は独自実装のやつを！
 	LoggingSettings("test.log")
@@ -30,6 +74,7 @@ func lesson29() {
 	log.Fatalln("error!") // これ以降はプログラムがexitしてしまう
 	log.Println("ああああ")
 }
+*/
 
 func LoggingSettings(logFile string){
 	logfile, _ := os.OpenFile(logFile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)

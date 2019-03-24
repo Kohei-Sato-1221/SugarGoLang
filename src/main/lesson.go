@@ -11,7 +11,41 @@ import (
 )
 
 func main() {
-	lesson31()
+	lesson35()
+}
+
+// 20190324 difference between new and make
+func lesson35(){
+	var p *int = new(int) //ポインター型の変数のメモリ領域を確保
+	fmt.Println(p)
+	fmt.Println(*p) //デフォルト値である0が入っている
+	
+	var p2 *int
+	fmt.Println(p2) //nilとなる　→　初期化されてないから
+	
+	/*
+	 ポインター型の変数: newを使う
+	 それ以外 : makeを使う
+	*/
+}
+
+// 20190324 pointer
+func lesson34(){
+	var n int = 100
+	one(&n) //参照渡しの実現
+	fmt.Println(n)
+	/*
+	fmt.Println(n)
+	fmt.Println(&n) //メモリーのアドレスが表示
+	
+	var p *int = &n //pointer型の変数宣言
+	fmt.Println(p) //アドレスが表示
+	fmt.Println(*p) //アドレスの参照先のint値が表示
+	*/
+}
+
+func one(p *int){
+	*p = 1
 }
 
 // 20190321 panic 例外的なやつ

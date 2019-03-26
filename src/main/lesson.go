@@ -11,7 +11,47 @@ import (
 )
 
 func main() {
-	lesson35()
+	lesson36()
+}
+
+// 20190326 Struct
+func lesson36(){
+	v := Vertex{X: 1, Y:2}
+	fmt.Println(v)
+	fmt.Println("v.X= ", v.X, " v.Y=", v.Y)
+	v.X = 200
+	fmt.Println(v)
+	
+	v2 := Vertex{X:1}
+	fmt.Println(v2) //Yはデフォルト値の0が入る
+	
+	v3 := Vertex{X:1, Y:2, S:"test"}
+	fmt.Println(v3)
+	
+	var v4 Vertex
+	fmt.Println(v4) // nilではなくデフォルト値が入っている
+
+	//以下はポインタを返すやり方
+	v5 := new(Vertex)
+	fmt.Println(v5)
+	fmt.Println(*v5)
+	
+	v6 := &Vertex{}
+	fmt.Println(v6)
+	
+	//参照渡しをすることで、値を変更可能
+	changeVertex(&v)
+	fmt.Println(v)
+}
+
+func changeVertex(v *Vertex){
+	v.X = 1000
+	//(*v).X = 1000 上記はこの文と同じ意味
+}
+
+type Vertex struct{
+	X,Y int // 小文字にするとprivateになる
+	S string
 }
 
 // 20190324 difference between new and make

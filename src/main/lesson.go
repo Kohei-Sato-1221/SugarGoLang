@@ -11,15 +11,35 @@ import (
 )
 
 func main() {
-	lesson37()
+	lesson41()
 }
 
-func lesson37(){
-	v := Vertex{3, 4, ""}
-//	fmt.Println(CalcArea(v))
-	v.Scale(10)
-	fmt.Println(v.Area())
+
+// 20190329 Embedded
+func lesson41(){
+	v := New3D(3, 4, 5) 
+	fmt.Println(v.Area3D())	
 }
+
+type Vertex struct{
+	X,Y int // 小文字にするとprivateになる
+}
+
+// 継承という概念がないのでEmbeddedという方法を使う
+type Vertex3D struct{
+	Vertex
+	z int
+}
+
+func (v Vertex3D) Area3D() int{
+	return v.X * v.Y * v.z
+}
+
+func New3D(x, y, z int) *Vertex3D{
+	return &Vertex3D{Vertex{x,y}, z}
+}
+
+
 
 // これにより v.Area()みたいな感じで呼び出すことができる
 func (v Vertex) Area() int{
@@ -36,6 +56,24 @@ func CalcArea(v Vertex) int{
 	return v.X * v.Y
 }
 
+// GOではクラスがないので以下の通りにやるとよいらしい
+func New(x, y int) *Vertex{
+	return &Vertex{x, y}
+}
+
+func lesson40(){
+	v := New(3, 4) //Go言語で推奨されているデザインパターン
+	v.Scale(10)
+	fmt.Println(v.Area())	
+}
+
+func lesson37(){
+	v := Vertex{3, 4}
+	v.Scale(10)
+	fmt.Println(v.Area())
+}
+
+
 // 20190326 Struct
 func lesson36(){
 	v := Vertex{X: 1, Y:2}
@@ -47,8 +85,6 @@ func lesson36(){
 	v2 := Vertex{X:1}
 	fmt.Println(v2) //Yはデフォルト値の0が入る
 	
-	v3 := Vertex{X:1, Y:2, S:"test"}
-	fmt.Println(v3)
 	
 	var v4 Vertex
 	fmt.Println(v4) // nilではなくデフォルト値が入っている
@@ -71,10 +107,7 @@ func changeVertex(v *Vertex){
 	//(*v).X = 1000 上記はこの文と同じ意味
 }
 
-type Vertex struct{
-	X,Y int // 小文字にするとprivateになる
-	S string
-}
+
 
 // 20190324 difference between new and make
 func lesson35(){

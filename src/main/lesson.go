@@ -11,7 +11,48 @@ import (
 )
 
 func main() {
-	lesson41()
+	lesson43()
+}
+
+// 20190330interface and duck typing
+func lesson43(){
+	var kohei Human = &Person{"kohei"}
+	DriveCar(kohei)
+}
+
+func DriveCar(human Human){
+	if human.Say() == "kohei-san" {
+		fmt.Println("Go")
+	}else{
+		fmt.Println("Get out!")
+	}
+}
+
+type Human interface {
+	Say() string
+}
+
+type Person struct {
+	Name string
+}
+
+func (p *Person) Say() string{
+	p.Name = p.Name + "-san"
+	fmt.Println(p.Name)
+	return p.Name
+}
+
+
+type Myint int
+
+//20190330 non struct
+func lesson42(){
+	myInt := Myint(10)
+	fmt.Println(myInt.Double())
+}
+
+func (i Myint) Double() int{
+	return int(i * 2)
 }
 
 

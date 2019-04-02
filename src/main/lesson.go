@@ -11,7 +11,73 @@ import (
 )
 
 func main() {
-	lesson43()
+	lesson46()
+}
+
+// 20190402 customized error
+func lesson46(){
+	if err := myFunc(); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func myFunc() error{
+	// something wrong
+	ok := false
+	if ok {
+		return nil
+	}
+	return &UserNotFound{Username: "mike"}
+}
+
+type UserNotFound struct{
+	Username string
+}
+
+func (e *UserNotFound) Error() string{
+	return fmt.Sprintf("User nod found : %v", e.Username)
+}
+
+
+
+//20190402 stringers
+func lesson45(){
+	sato := Employee{"Kohei Sato", 31}
+	fmt.Println(sato)
+}
+
+// String()は特別なメソッドで、出力内容を上書きすることができる
+func (e Employee) String() string{
+	return fmt.Sprintf("His name is %v.", e.Name)
+}
+
+type Employee struct{
+	Name string
+	Entranceyear int
+}
+
+
+//20190402 type assertion and switch statement
+func lesson44(){
+	do(10)
+	do("Sato")
+	do(true)
+}
+
+func do(i interface{}){ //このように記載することで好きな型を引数にできる
+	/*
+	ii := i.(int)
+	i = ii * 2
+	fmt.Println(i)
+	*/
+	switch v := i.(type){
+		case int:
+			fmt.Println(v * 2)
+		case string:
+			fmt.Println(v + "!")
+		default:
+			fmt.Printf("I do not know %T\n", v)				
+	}
 }
 
 // 20190330interface and duck typing

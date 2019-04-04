@@ -8,11 +8,57 @@ import (
 	"os"
 	"log"
 	"io"
+	"sync"
 )
 
 func main() {
-	lesson46()
+	lesson49()
 }
+
+// 20190404 goroutine
+func lesson49(){
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go goroutine("world", &wg)
+	normal("hello")
+	wg.Wait()
+}
+
+func goroutine(s string, wg *sync.WaitGroup){
+	for i := 0; i < 5; i++{
+		time.Sleep(100 * time.Millisecond)
+		fmt.Println(s, " ", i)
+	}
+	wg.Done()
+}
+
+func normal(s string){
+	for i := 0; i < 5; i++{
+		//time.Sleep(100 * time.Millisecond)
+		fmt.Println(s, " ", i)
+	}
+}
+
+// 20190404 
+func lesson47(){
+    v := Vertex47{3, 4}
+    fmt.Println(v.Plus())
+    
+    fmt.Println(v)
+}
+
+func (v Vertex47) Plus() int{
+	return v.X + v.Y
+}
+
+func (v Vertex47) String() string{
+	return fmt.Sprintf("X is %v! Y is %x!", v.X, v.Y)
+}
+
+type Vertex47 struct{
+    X, Y int
+}
+
 
 // 20190402 customized error
 func lesson46(){

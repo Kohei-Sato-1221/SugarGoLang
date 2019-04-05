@@ -12,8 +12,40 @@ import (
 )
 
 func main() {
-	lesson49()
+	lesson51()
 }
+
+// 20190405 buffered channel
+func lesson51(){
+	ch := make(chan int, 2)
+	ch <- 100
+	fmt.Println(len(ch))
+	ch <- 200
+	fmt.Println(len(ch))
+	
+	close(ch) //これをしないとループが終わらないそうな
+	for c := range ch{
+		fmt.Println(c)
+	}
+}
+
+// 20190405 channel
+func lesson50(){
+	s := []int{1, 2, 3, 4, 5}
+	c := make(chan int)
+	go goroutine1(s, c)
+	x := <-c //cに値が入るまでWaitする
+	fmt.Println(x)
+}
+
+func goroutine1(s []int, c chan int){
+	sum := 0
+	for _, v := range s{
+		sum  += v
+	}
+	c <- sum
+}
+
 
 // 20190404 goroutine
 func lesson49(){

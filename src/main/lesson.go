@@ -12,8 +12,66 @@ import (
 )
 
 func main() {
-	lesson51()
+	lesson53()
 }
+
+func producer(ch chan int, i int){
+	// Something
+	ch <- i * 2
+}
+
+func consumer(ch chan int, wg *sync.WaitGroup){
+	for i := range ch{
+		/*
+		func (){
+			defer wg.Done()
+			fmt.Println("process", i * 1000)
+		}()
+		*/
+		fmt.Println("process", i * 1000)
+		wg.Done()
+	}
+	//closeをしないと、chがまだ存在すると認識して以下が実行されない。
+	fmt.Println("########")
+}
+
+// 20190409 producer and consumer
+func lesson53(){
+	var wg sync.WaitGroup
+	ch := make(chan int)
+	
+	// Producer
+	for i := 0; i < 10; i++{
+		wg.Add(1)
+		go producer(ch, i)
+	}
+	
+	// Consumer
+	go consumer(ch, &wg)
+	wg.Wait()
+	close(ch) // consumer のGoroutineが走っている可能性があるので
+	time.Sleep(2 * time.Second)
+}
+
+// 20190409 channel,range,close
+func lesson52(){
+	s := []int{1, 2, 3, 4, 5}
+	c := make(chan int, len(s))
+	go goroutine2(s, c)
+	for i := range c{
+		fmt.Println(i)
+	}
+}
+
+func goroutine2(s []int, c chan int){
+	sum := 0
+	for _, v := range s{
+		sum  += v
+		c <- sum
+	}
+	close(c)
+}
+
 
 // 20190405 buffered channel
 func lesson51(){
@@ -28,6 +86,7 @@ func lesson51(){
 		fmt.Println(c)
 	}
 }
+
 
 // 20190405 channel
 func lesson50(){

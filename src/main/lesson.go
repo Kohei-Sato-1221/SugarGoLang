@@ -12,8 +12,102 @@ import (
 )
 
 func main() {
-	lesson54()
+	lesson57()
 }
+
+// 20190417 sync mutex
+
+type Counter struct {
+	v map[string] int
+	mux sync.Mutex
+}
+
+func (c *Counter) Inc(key string){
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	c.v[key]++
+}
+
+func (c *Counter) Value(key string) int{
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	return c.v[key]
+}
+
+func lesson57(){
+	// c := make(map[string] int)
+	c := Counter{v: make(map[string] int)}
+	go func(){
+		for i := 0; i < 10; i++{
+			//c["key"] += 1
+			c.Inc("key")
+		}
+	}()
+	go func(){
+		for i := 0; i < 10; i++{
+			//c["key"] += 1
+			c.Inc("key")
+		}
+	}()
+	time.Sleep(1 * time.Second)
+	fmt.Println(c, c.Value("key"))
+}
+
+// 20190414 default selection and for break
+func lesson56(){
+	tick := time.Tick(100 * time.Microsecond)
+	boom := time.After(500 * time.Microsecond)
+	
+	for {
+		select {
+			case <- tick:
+				fmt.Println("tick.")
+			case <- boom:
+				fmt.Println("BOOM!")
+				//break ここでbreakしてもforからは抜けない
+				return
+			default:
+				fmt.Println("       .")
+				time.Sleep(50 * time.Microsecond)
+		}
+	}
+}
+
+
+// 20190417 同時に複数のチャネルを受信する方法
+func lesson55() {
+	c1 := make(chan string)
+	c2 := make(chan string)
+	
+	go sugarroutine1(c1)
+	go sugarroutine2(c2)
+	
+	for {
+		select {
+			case msg1 := <- c1:
+				fmt.Println(msg1)
+			case msg2 := <- c2:
+				fmt.Println(msg2)
+		}
+	}
+}
+
+func sugarroutine1(ch chan string){
+	for {
+		ch <- "packet from 1"
+		time.Sleep(4 * time.Second)
+	}
+}
+
+func sugarroutine2(ch chan string){
+	for {
+		ch <- "packet from 2"
+		time.Sleep(1 * time.Second)
+	}
+}
+
+
+
 
 func lesson54(){
 	first := make(chan int)
@@ -28,6 +122,11 @@ func lesson54(){
 		fmt.Println(result)
 	}
 }
+
+
+
+
+
 
 func producer2(first chan int){
 	defer close(first)

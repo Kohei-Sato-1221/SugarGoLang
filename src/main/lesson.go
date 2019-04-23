@@ -11,12 +11,29 @@ import (
 	"sync"
 )
 
-func main() {
-	lesson57()
+func main_old() {
+	lesson58()
 }
 
-// 20190417 sync mutex
+func goroutine58(s []string, c chan string){
+	sum := ""
+	defer close(c)
+	for _, v:= range s{
+		sum += v
+		c <- sum
+	}
+}
 
+func lesson58(){
+	words := []string{"test1", "test2!", "test3!", "test4!"}
+	c := make(chan string)
+	go goroutine58(words, c)
+	for w := range c{
+		fmt.Println(w)
+	}
+}
+
+// 20190417 sync mutex  →　同時に書き込みをした際のエラーを排除する
 type Counter struct {
 	v map[string] int
 	mux sync.Mutex

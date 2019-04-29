@@ -1,8 +1,8 @@
-package main2
+package main
 
 import (
 	"fmt"
-	"main2/mylib" // 他ファイルのGOファイルを呼ぶ方法
+	"mylib" // 他ファイルのGOファイルを呼ぶ方法
 )
 
 func main(){

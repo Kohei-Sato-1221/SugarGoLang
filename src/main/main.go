@@ -1,12 +1,21 @@
 package main
 
 import (
+	"github.com/markcheno/go-quote"
+	alias "github.com/markcheno/go-talib"
 	"fmt"
 	"mylib" // 他ファイルのGOファイルを呼ぶ方法
 )
 
 func main(){
-	lesson59()
+	lesson64()
+}
+
+func lesson64() {
+	spy, _ := quote.NewQuoteFromYahoo("spy", "2016-01-01", "2016-04-01", quote.Daily, true)
+	fmt.Print(spy.CSV())
+	rsi2 := alias.Rsi(spy.Close, 2)
+	fmt.Println(rsi2)
 }
 
 // 20190422 Public and private

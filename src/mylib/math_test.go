@@ -21,6 +21,18 @@ func TestAverage(t *testing.T){
 	}
 }
 
+func Example(){
+	var v int
+	v = Average([] int{1, 2, 3, 4, 5, 7})
+	fmt.Println("平均は...." + strconv.Itoa(v))
+}
+
+func ExampleAverage(){
+	var v int
+	v = Average([] int{1, 2, 3, 4, 5, 7})
+	fmt.Println("平均は...." + strconv.Itoa(v))
+}
+
 // terminalで実行する場合
 // cd /Users/koheisato/eclipse-workspace/SugarGoLang/src
 // go test ./... -count=1

@@ -1,10 +1,15 @@
+/*
+mylib is my original library
+*/
 package mylib
 
 //lesson59
-func Average(s []int) int{
+// Averate returns the agerage of a series of numbers
+func Average(s []int) int {
+	// total number
 	total := 0
-	for _, i := range s{
+	for _, i := range s {
 		total += i
 	}
-	return int(total/len(s))
+	return int(total / len(s))
 }

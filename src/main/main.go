@@ -1,82 +1,64 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"net/http"
-	"net/url"
-	"io/ioutil"
-	"encoding/json"
+	"time"
+	
+	"golang.org/x/sync/semaphore"
+	"gopkg.in/ini.v1"
 )
 
+
 func main(){
-	lesson74()
+	lesson76()
 }
 
-// json.Unmarshal
-func lesson74(){
-	// NWから来たjsonをstructに格納
-	b := []byte(`{"name":"mike", "age":"20", "nicknames":["a", "b", "c"]}`)
-	var p Person
-	if err := json.Unmarshal(b, &p); err != nil{
-		fmt.Println(err)
+// go ini → configファイルをよむライブラリ
+func lesson77(){
+	
+}
+
+type ConfigList struct{
+	Port      int
+	DbName    string
+	SQLDriver string
+}
+
+var Config ConfigList
+
+func init(){
+	cfg, _ := ConfigList{
+		Port
 	}
-	fmt.Println(p.Name, p.Age, p.Nicknames)
-	
-	//structをjsonに変換
-	v, _ := json.Marshal(p)
-	fmt.Println(string(v))
 }
 
-// json.Marshal をオーバーライドする
-func (p Person) MarshalJSON() ([]byte, error){
-	//a := &struct{Name string}{Name: "test"}
-	v, err := json.Marshal(&struct{
-			Name string
-		}{
-			Name: "Mr." + p.Name,
-		})
-	return v, err
+// Semaphore →　同時に実行されるgoroutineの数を制御する
+func lesson76(){
+	ctx := context.TODO()
+	go longProcess(ctx)	
+	go longProcess(ctx)	
+	go longProcess(ctx)
+	time.Sleep(5 * time.Second)
 }
 
-type Person struct{
-	// ``で囲むとjson変換時のキーを指定できる
-	Name       string  `json:"name"`  //`json:name,omitempty` で空要素のときに要素を非表示にできる
-	Age        int     `json:"age,string"`
-	Nicknames []string `json:"nicknames"`
-	T          T       `json:T,omitempty`
-}
+var s *semaphore.Weighted = semaphore.NewWeighted(1)
 
-type T struct{}
-
-// http
-func lesson73(){
-	/* シンプルなGETメソッド
-	resp, _ := http.Get("http://example.com")
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
-	*/
+func longProcess(ctx context.Context){
+	isAcquire := s.TryAcquire(1)
+	if !isAcquire {
+		fmt.Println("Could not get lock....")
+		return
+	}
 	
-	//URLの形式チェック
-	base, _ := url.Parse("http://example.com")
-	reference, _ := url.Parse("/test?a=1&b=2")
-	endpoint := base.ResolveReference(reference).String()
-	fmt.Println(endpoint)
-	
-	//リクエストを投げる
-	req, _ := http.NewRequest("GET", endpoint, nil)
-	// req, _ := http.NewRequest("POST", endpoint, bytes.NewBuffer([]byte("password")))
-	req.Header.Add("IF-None-Match", `W/"wyzzy"`)
-	q := req.URL.Query()
-	q.Add("c", "3&%")
-	fmt.Println(q)
-	fmt.Println(q.Encode())
-	req.URL.RawQuery = q.Encode()
-	
-	var client *http.Client = &http.Client{}
-	resp, _ := client.Do(req)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
+//	if err := s.Acquire(ctx, 1); err != nil{
+//		fmt.Print(err)
+//		return
+//	}
+	defer s.Release(1)
+	fmt.Println("Wait......")
+	time.Sleep(1 * time.Second)
+	fmt.Println("Done")	
 }
 
 

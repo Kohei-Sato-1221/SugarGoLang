@@ -7,11 +7,55 @@ import (
 	
 	"golang.org/x/sync/semaphore"
 	"gopkg.in/ini.v1"
+	
+	"log"
+	"net/url"
+	"github.com/gorilla/websocket"
 )
 
 
 func main(){
-	lesson77()
+	lesson78()
+}
+
+type JsonRPC2 struct {
+	Version string      `json:"jsonrpc"`
+	Method  string      `json:"method"`
+	Params  interface{} `json:"params"`
+	Result  interface{} `json:"result,omitempty"`
+	Id      *int        `json:"id,omitempty"`
+}
+
+type SubscribeParams struct {
+	Channel string `json:"channel"`
+}
+
+func lesson78(){
+	u := url.URL{Scheme: "wss", Host: "ws.lightstream.bitflyer.com", Path: "/json-rpc"}
+	log.Printf("connectiong to %s", u.String())
+	
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Fatal("dial:", err)
+	}
+	defer c.Close()
+	
+	if err := c.WriteJSON(&JsonRPC2{Version: "2.0", Method: "subscribe", Params: &SubscribeParams{"lightning_ticker_BTC_JPY"}}); err != nil {
+		log.Fatal("subscribe:", err)
+		return
+	}
+	
+	for {
+		message := new(JsonRPC2)
+		if err := c.ReadJSON(message); err != nil {
+			log.Println("read:", err)
+			return
+		}
+		
+		if message.Method == "channelMessage" {
+			log.Println(message.Params);
+		}
+	}
 }
 
 type ConfigList struct{

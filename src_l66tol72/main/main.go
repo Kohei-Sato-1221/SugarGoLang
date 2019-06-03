@@ -18,6 +18,7 @@ func main(){
 	lesson72()
 }
 
+
 //ioutil
 func lesson72(){
 	content, err := ioutil.ReadFile("/Users/koheisato/eclipse-workspace/SugarGoLang/src/main/main.go")

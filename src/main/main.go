@@ -11,12 +11,7 @@ import (
 
 
 func main(){
-	lesson76()
-}
-
-// go ini → configファイルをよむライブラリ
-func lesson77(){
-	
+	lesson77()
 }
 
 type ConfigList struct{
@@ -28,9 +23,19 @@ type ConfigList struct{
 var Config ConfigList
 
 func init(){
-	cfg, _ := ConfigList{
-		Port
+	cfg, _ := ini.Load("config.ini")
+	Config = ConfigList{
+		Port: cfg.Section("web").Key("port").MustInt(),
+		DbName: cfg.Section("db").Key("name").MustString("example.sql"),
+		SQLDriver: cfg.Section("db").Key("driver").String(),
 	}
+}
+
+// go ini → configファイルをよむライブラリ
+func lesson77(){
+	fmt.Printf("%T %v\n", Config.Port, Config.Port)
+	fmt.Printf("%T %v\n", Config.DbName, Config.DbName)
+	fmt.Printf("%T %v\n", Config.SQLDriver, Config.SQLDriver)
 }
 
 // Semaphore →　同時に実行されるgoroutineの数を制御する
